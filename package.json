@@ -1,0 +1,11 @@
+{
+  "name": "commercial-space-ai-brainstorming-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node apps/api/server.mjs",
+    "validate:schemas": "python3 scripts/validate_schemas.py"
+  }
+}
+

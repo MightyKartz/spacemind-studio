@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>CommercialSpaceAI</Name>
+    <Assembly>{{INSTALL_DIR}}\CommercialSpaceAI.RevitExporter.Revit2025.dll</Assembly>
+    <AddInId>8F71B263-2B5D-4B09-9B2E-4F11C7FA2A10</AddInId>
+    <FullClassName>CommercialSpaceAI.RevitExporter.Revit2025.App</FullClassName>
+    <VendorId>CSAI</VendorId>
+    <VendorDescription>Commercial Space AI</VendorDescription>
+  </AddIn>
+</RevitAddIns>

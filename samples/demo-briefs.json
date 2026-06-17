@@ -1,0 +1,25 @@
+{
+  "briefs": [
+    {
+      "id": "demo_brief_coffee_social",
+      "label": "咖啡社交空间",
+      "businessType": "coffee",
+      "generateCount": 6,
+      "brief": "生成 6 个适合咖啡社交空间的方案，沿街入口权重 60%，商场入口权重 40%，保留后场，增加展示面和停留感。"
+    },
+    {
+      "id": "demo_brief_retail_display",
+      "label": "零售展示快闪",
+      "businessType": "retail",
+      "generateCount": 5,
+      "brief": "生成 5 个零售快闪方案，强化入口展示面，保留中部浏览回路，优先使用可移动展台并降低施工成本。"
+    },
+    {
+      "id": "demo_brief_work_lounge",
+      "label": "复合办公休闲",
+      "businessType": "office",
+      "generateCount": 4,
+      "brief": "生成 4 个复合办公休闲方案，需要安静工作卡座、软座交流区和小型活动核心，避免遮挡主通道。"
+    }
+  ]
+}

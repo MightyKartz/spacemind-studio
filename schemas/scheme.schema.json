@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://commercial-space-ai.local/schemas/scheme.schema.json",
+  "title": "Commercial Space AI Scheme",
+  "type": "object",
+  "required": ["schemaVersion", "schemeId", "projectId", "name", "status", "origin", "strategy", "zones", "furniture", "annotations", "scores", "validation"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "schemeId": { "type": "string", "minLength": 1 },
+    "projectId": { "type": "string", "minLength": 1 },
+    "projectRevision": { "type": "string" },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["draft", "valid", "blocked", "exported", "archived"] },
+    "origin": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "enum": ["ai_strategy", "geometry_engine", "user", "imported_case"] },
+        "llmRunId": { "type": "string" },
+        "geometryRunId": { "type": "string" },
+        "geometryEngineVersion": { "type": "string" },
+        "referenceCaseIds": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "required": ["summary", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "conceptTags": { "type": "array", "items": { "type": "string" } },
+        "rationale": { "type": "string", "minLength": 1 },
+        "tradeoffs": { "type": "array", "items": { "type": "string" } },
+        "assumptions": { "type": "array", "items": { "type": "string" } },
+        "placementHints": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "caseRefs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "zones": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/zone" }
+    },
+    "furniture": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/furniture" }
+    },
+    "arrows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/arrow" }
+    },
+    "annotations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/annotation" }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["circulation", "capacity", "display", "cost", "feasibility"],
+      "additionalProperties": false,
+      "properties": {
+        "circulation": { "$ref": "#/$defs/score" },
+        "capacity": { "$ref": "#/$defs/score" },
+        "display": { "$ref": "#/$defs/score" },
+        "cost": { "$ref": "#/$defs/score" },
+        "feasibility": { "$ref": "#/$defs/score" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["blockers", "warnings"],
+      "additionalProperties": false,
+      "properties": {
+        "overallStatus": { "type": "string", "enum": ["pass", "warn", "fail"] },
+        "blockers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/validationIssue" }
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/validationIssue" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "score": { "type": "number", "minimum": 0, "maximum": 10 },
+    "point": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "polygon": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/point" },
+      "minItems": 3
+    },
+    "zone": {
+      "type": "object",
+      "required": ["id", "type", "label", "polygon", "color"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "label": { "type": "string" },
+        "polygon": { "$ref": "#/$defs/polygon" },
+        "color": { "type": "string" },
+        "area": { "type": "number", "minimum": 0 },
+        "capacity": { "type": "integer", "minimum": 0 },
+        "rationale": { "type": "string" },
+        "locked": { "type": "boolean", "default": false },
+        "source": { "$ref": "#/$defs/sourceKind" }
+      }
+    },
+    "furniture": {
+      "type": "object",
+      "required": ["id", "type", "position", "size", "rotation"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "label": { "type": "string" },
+        "position": { "$ref": "#/$defs/point" },
+        "size": {
+          "type": "object",
+          "required": ["width", "depth"],
+          "additionalProperties": false,
+          "properties": {
+            "width": { "type": "number", "minimum": 0 },
+            "depth": { "type": "number", "minimum": 0 }
+          }
+        },
+        "rotation": { "type": "number" },
+        "zoneId": { "type": "string" },
+        "capacity": { "type": "integer", "minimum": 0 },
+        "source": { "$ref": "#/$defs/sourceKind" }
+      }
+    },
+    "arrow": {
+      "type": "object",
+      "required": ["id", "type", "points"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["circulation", "traffic", "attention"] },
+        "points": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/point" },
+          "minItems": 2
+        },
+        "label": { "type": "string" }
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "required": ["id", "text", "position"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "position": { "$ref": "#/$defs/point" },
+        "targetId": { "type": "string" },
+        "style": { "type": "string" }
+      }
+    },
+    "validationIssue": {
+      "type": "object",
+      "required": ["code", "status", "severity", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string" },
+        "status": { "type": "string", "enum": ["pass", "warn", "fail"] },
+        "message": { "type": "string" },
+        "targetId": { "type": "string" },
+        "elementIds": { "type": "array", "items": { "type": "string" } },
+        "measured": { "type": ["number", "string", "null"] },
+        "threshold": { "type": ["number", "string", "null"] },
+        "severity": { "type": "string", "enum": ["info", "warning", "error"] }
+      }
+    },
+    "sourceKind": {
+      "type": "string",
+      "enum": ["user", "revit", "dxf", "svg", "ai_strategy", "geometry_engine", "imported_case"]
+    }
+  }
+}

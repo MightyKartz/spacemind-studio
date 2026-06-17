@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://commercial-space-ai.local/schemas/revit-import.schema.json",
+  "title": "Commercial Space AI Revit Import",
+  "type": "object",
+  "required": ["schemaVersion", "importId", "source", "unit", "view", "elements", "warnings"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "importId": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "object",
+      "required": ["application", "revitVersion", "documentTitle", "exportedAt", "exporterVersion", "exportScope", "privacyMode"],
+      "additionalProperties": false,
+      "properties": {
+        "application": { "type": "string", "const": "Autodesk Revit" },
+        "revitVersion": { "type": "string" },
+        "documentTitle": { "type": "string" },
+        "exportedAt": { "type": "string" },
+        "exporterVersion": { "type": "string" },
+        "exportScope": { "type": "string", "enum": ["current_view", "selected_view", "whole_project"] },
+        "privacyMode": { "type": "string", "enum": ["standard", "redacted", "debug"] }
+      }
+    },
+    "unit": { "type": "string", "const": "mm" },
+    "view": {
+      "type": "object",
+      "required": ["id", "name", "scale", "origin", "transform"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "scale": { "type": "number", "exclusiveMinimum": 0 },
+        "origin": { "$ref": "#/$defs/point" },
+        "cropBox": { "$ref": "#/$defs/polygon" },
+        "level": { "type": "string" },
+        "uniqueId": { "type": "string" },
+        "transform": {
+          "type": "object",
+          "required": ["rotation", "scale"],
+          "additionalProperties": false,
+          "properties": {
+            "rotation": { "type": "number" },
+            "scale": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        }
+      }
+    },
+    "site": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "candidateBoundary": { "$ref": "#/$defs/polygon" },
+        "grossArea": { "type": "number", "minimum": 0 },
+        "candidateEntrances": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "elements": {
+      "type": "object",
+      "required": ["walls", "columns", "doors", "windows", "rooms", "furniture", "textNotes", "filledRegions", "detailLines"],
+      "additionalProperties": false,
+      "properties": {
+        "walls": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "columns": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "doors": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "windows": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "rooms": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "areas": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "furniture": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "fixtures": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "textNotes": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "filledRegions": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "detailLines": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } },
+        "dimensions": { "type": "array", "items": { "$ref": "#/$defs/revitElement" } }
+      }
+    },
+    "semanticHints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "targetId", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string" },
+          "targetId": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "reason": { "type": "string" },
+          "status": { "type": "string", "enum": ["candidate", "confirmed", "rejected"] }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "revitElementId": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "polygon": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/point" },
+      "minItems": 3
+    },
+    "revitElement": {
+      "type": "object",
+      "required": ["id", "revitElementId", "uniqueId", "category", "geometry"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "revitElementId": { "type": "integer" },
+        "uniqueId": { "type": "string" },
+        "category": { "type": "string" },
+        "familyName": { "type": "string" },
+        "typeName": { "type": "string" },
+        "geometry": {
+          "type": "object",
+          "required": ["kind", "coordinates"],
+          "additionalProperties": true,
+          "properties": {
+            "kind": { "type": "string", "enum": ["point", "line", "polyline", "polygon", "bbox"] },
+            "coordinates": {}
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

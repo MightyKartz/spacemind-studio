@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "0.1.0",
+  "importId": "imp_demo_001",
+  "source": {
+    "application": "Autodesk Revit",
+    "revitVersion": "2025",
+    "documentTitle": "demo.rvt",
+    "exportedAt": "2026-06-17T12:00:00+08:00",
+    "exporterVersion": "0.1.0",
+    "exportScope": "current_view",
+    "privacyMode": "redacted"
+  },
+  "unit": "mm",
+  "view": {
+    "id": 101,
+    "name": "Level 1",
+    "scale": 50,
+    "origin": [0, 0],
+    "cropBox": [[0, 0], [22000, 0], [22000, 9000], [0, 9000]],
+    "level": "Level 1",
+    "uniqueId": "view_unique_001",
+    "transform": {
+      "rotation": 0,
+      "scale": 1
+    }
+  },
+  "site": {
+    "candidateBoundary": [[0, 0], [22000, 0], [22000, 9000], [0, 9000]],
+    "grossArea": 200000000,
+    "candidateEntrances": ["door_201"]
+  },
+  "elements": {
+    "walls": [
+      {
+        "id": "wall_101",
+        "revitElementId": 101,
+        "uniqueId": "wall_unique_101",
+        "category": "Walls",
+        "typeName": "Basic Wall 200mm",
+        "geometry": {
+          "kind": "line",
+          "coordinates": [[0, 0], [22000, 0]]
+        },
+        "parameters": {
+          "thickness": 200
+        }
+      }
+    ],
+    "columns": [],
+    "doors": [],
+    "windows": [],
+    "rooms": [],
+    "areas": [],
+    "furniture": [],
+    "fixtures": [],
+    "textNotes": [],
+    "filledRegions": [],
+    "detailLines": [],
+    "dimensions": []
+  },
+  "semanticHints": [
+    {
+      "type": "candidate_entrance",
+      "targetId": "door_201",
+      "confidence": 0.62,
+      "reason": "Door near exterior boundary",
+      "status": "candidate"
+    }
+  ],
+  "warnings": []
+}
+

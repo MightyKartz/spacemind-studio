@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "0.1.0",
+  "projectId": "proj_demo_001",
+  "name": "长条双入口咖啡空间",
+  "createdAt": "2026-06-17T12:00:00+08:00",
+  "updatedAt": "2026-06-17T12:00:00+08:00",
+  "unit": "mm",
+  "source": {
+    "type": "pdf",
+    "fileId": "file_plan_001",
+    "fileName": "source-plan.pdf",
+    "page": 1,
+    "scale": 1,
+    "scaleCalibration": {
+      "knownLength": 10000,
+      "pixelLength": 500,
+      "confirmed": true
+    },
+    "backgroundTransform": {
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotation": 0
+    }
+  },
+  "coordinateSystem": {
+    "origin": [0, 0],
+    "yAxis": "down",
+    "rotation": 0,
+    "scale": 1
+  },
+  "site": {
+    "area": 200000000,
+    "shapeType": "long_rectangle",
+    "boundary": [[0, 0], [22000, 0], [22000, 9000], [0, 9000]],
+    "entrances": [
+      {
+        "id": "entry_street",
+        "label": "沿街入口",
+        "position": [0, 4600],
+        "side": "west",
+        "width": 1800,
+        "trafficWeight": 0.6,
+        "direction": 0,
+        "confirmed": true,
+        "confidence": 1,
+        "source": "user"
+      },
+      {
+        "id": "entry_mall",
+        "label": "商场入口",
+        "position": [22000, 4600],
+        "side": "east",
+        "width": 1600,
+        "trafficWeight": 0.4,
+        "direction": 180,
+        "confirmed": true,
+        "confidence": 1,
+        "source": "user"
+      }
+    ],
+    "fixedElements": [
+      {
+        "id": "col_001",
+        "type": "column",
+        "label": "结构柱",
+        "geometry": {
+          "kind": "polygon",
+          "coordinates": [[10500, 0], [11200, 0], [11200, 700], [10500, 700]]
+        },
+        "locked": true,
+        "confirmed": true,
+        "confidence": 1,
+        "source": "user"
+      }
+    ],
+    "grossArea": 200000000,
+    "netDesignArea": 180000000,
+    "candidateBackOfHouse": [[[15000, 0], [22000, 0], [22000, 2600], [15000, 2600]]]
+  },
+  "constraints": {
+    "minAisleWidth": 1200,
+    "secondaryAisleWidth": 900,
+    "doorClearanceDepth": 1200,
+    "keepDoorClearance": true,
+    "avoidColumns": true,
+    "respectBoundary": true
+  },
+  "brief": {
+    "businessType": "coffee",
+    "goals": ["social", "display", "circulation"],
+    "requiredZones": ["social", "bar", "soft_seating"],
+    "goalWeights": {
+      "social": 0.4,
+      "display": 0.3,
+      "circulation": 0.3
+    },
+    "style": "warm_modern",
+    "budgetLevel": "medium",
+    "minSeats": 32,
+    "generateCount": 6,
+    "referenceCaseIds": ["case_demo_001"],
+    "constraints": ["保留后场", "主通道不小于1200mm"]
+  }
+}
+

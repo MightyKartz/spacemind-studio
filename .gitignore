@@ -1,0 +1,22 @@
+.DS_Store
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development state
+.data/
+tmp/
+
+# Browser verification artifacts
+.playwright-cli/
+.playwright-mcp/
+
+# Build outputs
+dist/
+build/
+coverage/
+revit-addin/dist/
+revit-addin/bin/
+revit-addin/obj/
+

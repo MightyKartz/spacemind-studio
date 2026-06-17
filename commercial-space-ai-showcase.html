@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商业空间 AI 头脑风暴工具</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2317211d'/%3E%3Cpath d='M14 14h36v36H14z' fill='none' stroke='%238edfd0' stroke-width='5'/%3E%3Cpath d='M32 14v36M14 32h36' stroke='%238edfd0' stroke-width='4'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --ink: #17211d;
+      --muted: #64706b;
+      --line: #d8d0c1;
+      --charcoal: #1f2724;
+      --mint: #8edfd0;
+      --sage: #9fb88f;
+      --clay: #d96d4f;
+      --blue: #5877a6;
+      --amber: #e5ad47;
+      --white: #fffdf8;
+      --shadow: 0 20px 70px rgba(31, 39, 36, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(23, 33, 29, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(23, 33, 29, 0.04) 1px, transparent 1px),
+        var(--paper);
+      background-size: 34px 34px;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 20;
+      inset: 0 0 auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px clamp(20px, 4vw, 56px);
+      color: var(--white);
+      background: rgba(23, 33, 29, 0.76);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 253, 248, 0.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--mint);
+      background:
+        linear-gradient(90deg, transparent 45%, var(--mint) 45% 55%, transparent 55%),
+        linear-gradient(transparent 45%, var(--mint) 45% 55%, transparent 55%),
+        rgba(142, 223, 208, 0.16);
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+      color: rgba(255, 253, 248, 0.8);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+    }
+
+    .hero {
+      min-height: 88vh;
+      position: relative;
+      display: grid;
+      align-items: end;
+      padding: 104px clamp(22px, 5vw, 80px) 72px;
+      color: var(--white);
+      overflow: hidden;
+      border-bottom: 1px solid var(--charcoal);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(23, 33, 29, 0.88) 0%, rgba(23, 33, 29, 0.64) 42%, rgba(23, 33, 29, 0.18) 100%),
+        url("assets/reference-output.png") center 57% / cover no-repeat;
+      transform: scale(1.02);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 16vh;
+      background: linear-gradient(transparent, rgba(23, 33, 29, 0.72));
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: min(920px, 100%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      color: var(--mint);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      background: var(--mint);
+    }
+
+    h1,
+    h2,
+    h3,
+    .metric-number {
+      font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 880px;
+      font-size: clamp(44px, 8vw, 118px);
+      line-height: 0.95;
+      font-weight: 900;
+    }
+
+    .hero-lede {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: rgba(255, 253, 248, 0.88);
+      font-size: clamp(18px, 2vw, 26px);
+      line-height: 1.62;
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 12px 18px;
+      border: 1px solid rgba(255, 253, 248, 0.34);
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .button.primary {
+      color: var(--ink);
+      background: var(--mint);
+      border-color: var(--mint);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .section {
+      padding: clamp(56px, 8vw, 108px) clamp(22px, 5vw, 80px);
+    }
+
+    .section.dark {
+      color: var(--white);
+      background: var(--charcoal);
+    }
+
+    .section.white {
+      background: var(--white);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.55fr);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 40px;
+    }
+
+    .section-kicker {
+      margin: 0 0 12px;
+      color: var(--clay);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 72px);
+      line-height: 1.04;
+      font-weight: 900;
+    }
+
+    .section-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .dark .section-intro {
+      color: rgba(255, 253, 248, 0.72);
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .plan-frame {
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .plan-frame figcaption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      color: var(--ink);
+      border-top: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    .tag {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      padding: 4px 8px;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tag.blue {
+      color: var(--blue);
+    }
+
+    .tag.clay {
+      color: var(--clay);
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 190px;
+      padding: 18px;
+      background: rgba(255, 253, 248, 0.08);
+      border: 1px solid rgba(255, 253, 248, 0.16);
+      border-radius: 6px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      display: block;
+      margin-bottom: 22px;
+      color: var(--mint);
+      font-family: "Songti SC", "STSong", serif;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.18;
+    }
+
+    .step p {
+      margin: 0;
+      color: rgba(255, 253, 248, 0.7);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.55fr);
+      min-height: 620px;
+      border: 1px solid var(--charcoal);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .canvas-demo {
+      position: relative;
+      min-height: 540px;
+      padding: 24px;
+      background:
+        linear-gradient(90deg, rgba(23, 33, 29, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(23, 33, 29, 0.05) 1px, transparent 1px),
+        #fbfaf5;
+      background-size: 30px 30px;
+      overflow: hidden;
+    }
+
+    .floor-outline {
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      bottom: 18%;
+      height: 42%;
+      border: 5px solid #232927;
+      background: rgba(255, 253, 248, 0.72);
+    }
+
+    .zone {
+      position: absolute;
+      border: 2px dashed rgba(23, 33, 29, 0.42);
+      display: grid;
+      place-items: center;
+      color: rgba(23, 33, 29, 0.74);
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .zone.social {
+      left: 11%;
+      bottom: 24%;
+      width: 20%;
+      height: 30%;
+      background: rgba(142, 223, 208, 0.48);
+    }
+
+    .zone.office {
+      left: 34%;
+      bottom: 24%;
+      width: 27%;
+      height: 30%;
+      background: rgba(88, 119, 166, 0.24);
+    }
+
+    .zone.soft {
+      right: 11%;
+      bottom: 24%;
+      width: 24%;
+      height: 30%;
+      background: rgba(217, 109, 79, 0.22);
+    }
+
+    .counter {
+      position: absolute;
+      left: 36%;
+      bottom: 53%;
+      width: 33%;
+      height: 7%;
+      background: repeating-linear-gradient(135deg, #202623, #202623 8px, #f2eee4 8px, #f2eee4 14px);
+      border: 2px solid #202623;
+    }
+
+    .pillar {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      background: #080908;
+    }
+
+    .pillar.one {
+      left: 56%;
+      bottom: 55%;
+    }
+
+    .pillar.two {
+      right: 13%;
+      bottom: 56%;
+    }
+
+    .flow-arrow {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 38%;
+      height: 2px;
+      border-top: 2px dashed rgba(217, 109, 79, 0.72);
+    }
+
+    .flow-arrow::after {
+      content: "";
+      position: absolute;
+      right: -4px;
+      top: -8px;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 12px solid var(--clay);
+    }
+
+    .floating-note {
+      position: absolute;
+      left: 9%;
+      top: 9%;
+      width: min(360px, 72%);
+      padding: 14px 16px;
+      color: var(--charcoal);
+      background: #fffdf8;
+      border-left: 5px solid var(--clay);
+      box-shadow: 0 12px 36px rgba(31, 39, 36, 0.16);
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .side-panel {
+      border-left: 1px solid var(--line);
+      padding: 22px;
+      background: #f2eee4;
+    }
+
+    .panel-title {
+      margin: 0 0 18px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .prompt-box {
+      padding: 16px;
+      color: var(--white);
+      background: var(--charcoal);
+      border-radius: 6px;
+      line-height: 1.65;
+    }
+
+    .scheme-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .scheme {
+      padding: 14px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .scheme strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .scheme p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric {
+      padding: 20px;
+      min-height: 150px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .metric-number {
+      margin: 0 0 8px;
+      color: var(--clay);
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .metric p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .audiences {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .audience {
+      padding: 22px;
+      min-height: 180px;
+      border: 1px solid rgba(255, 253, 248, 0.18);
+      border-radius: 6px;
+      background: rgba(255, 253, 248, 0.07);
+    }
+
+    .audience h3 {
+      margin: 0 0 12px;
+      color: var(--mint);
+      font-size: 24px;
+    }
+
+    .audience p {
+      margin: 0;
+      color: rgba(255, 253, 248, 0.72);
+      line-height: 1.75;
+    }
+
+    .roadmap {
+      position: relative;
+      display: grid;
+      gap: 18px;
+    }
+
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 24px;
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .roadmap-item:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .roadmap-phase {
+      color: var(--blue);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .roadmap-item h3 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .roadmap-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.72;
+    }
+
+    .cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: center;
+      padding: clamp(34px, 6vw, 64px);
+      color: var(--white);
+      background:
+        linear-gradient(120deg, rgba(31, 39, 36, 0.96), rgba(31, 39, 36, 0.8)),
+        url("assets/source-plan.png") center / cover no-repeat;
+      border: 1px solid rgba(255, 253, 248, 0.16);
+    }
+
+    .cta h2 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 5vw, 68px);
+    }
+
+    .cta p {
+      margin: 0;
+      max-width: 780px;
+      color: rgba(255, 253, 248, 0.78);
+      font-size: 18px;
+      line-height: 1.76;
+    }
+
+    .footer {
+      padding: 28px clamp(22px, 5vw, 80px);
+      color: rgba(255, 253, 248, 0.7);
+      background: #111714;
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .nav {
+        display: none;
+      }
+
+      .section-header,
+      .comparison,
+      .app-shell,
+      .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow,
+      .metrics,
+      .audiences {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .side-panel {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        min-height: 84vh;
+        padding-top: 96px;
+      }
+
+      .workflow,
+      .metrics,
+      .audiences {
+        grid-template-columns: 1fr;
+      }
+
+      .roadmap-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .plan-frame figcaption {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" aria-label="页面导航">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>AI Space Brainstorm</span>
+    </div>
+    <nav class="nav">
+      <a href="#why">价值</a>
+      <a href="#workflow">流程</a>
+      <a href="#product">产品形态</a>
+      <a href="#users">用户</a>
+      <a href="#roadmap">路线</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">Commercial Space AI Test-Fit</div>
+        <h1>商业空间 AI 头脑风暴工具</h1>
+        <p class="hero-lede">把原始铺位图、Revit 历史案例和设计经验转成可复用的数据资产，在建筑约束内快速生成多套可编辑功能落位方案。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#product">查看产品原型</a>
+          <a class="button" href="#roadmap">阅读开发路线</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white" id="why">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Why It Matters</p>
+          <h2>不是替代设计师，而是让早期方案探索更快发生。</h2>
+        </div>
+        <p class="section-intro">商业空间方案阶段需要大量试错：入口、人流、功能分区、展示面、后场、座位容量都在互相拉扯。这个工具把“找案例、拆图、摆方案、写说明”变成一个可对话、可编辑、可沉淀的流程。</p>
+      </div>
+
+      <div class="comparison" aria-label="原始图纸与目标输出对照">
+        <figure class="plan-frame">
+          <img src="assets/source-plan.png" alt="原始商业空间平面图">
+          <figcaption>
+            <span>输入：原始平面图</span>
+            <span class="tag blue">PNG / PDF / DXF / RVT</span>
+          </figcaption>
+        </figure>
+        <figure class="plan-frame">
+          <img src="assets/reference-output.png" alt="带功能分区、家具、动线与说明的目标方案图">
+          <figcaption>
+            <span>输出：可编辑功能落位方案</span>
+            <span class="tag clay">方案卡片 + JSON</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section dark" id="workflow">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Workflow</p>
+          <h2>从图纸识别到多方案生成，拆成五个稳定环节。</h2>
+        </div>
+        <p class="section-intro">LLM 负责理解需求、复用案例和生成策略；几何引擎负责坐标、避让、碰撞与通道校验。这样生成的方案既有创意，也能保持工程约束。</p>
+      </div>
+
+      <div class="workflow">
+        <article class="step">
+          <h3>导入图纸</h3>
+          <p>支持 PNG、PDF、DXF、SVG，后期接入 RVT 云端转换，把建筑边界和固定要素抽成 JSON。</p>
+        </article>
+        <article class="step">
+          <h3>确认约束</h3>
+          <p>用户确认入口、人流比例、柱子、后场、不可动墙、最小通道宽度和可设计区域。</p>
+        </article>
+        <article class="step">
+          <h3>检索案例</h3>
+          <p>从历史 Revit 和成品图纸案例库中找到相似空间，参考布局逻辑和表达风格。</p>
+        </article>
+        <article class="step">
+          <h3>生成方案</h3>
+          <p>AI 输出多套策略，几何引擎生成分区、家具、动线、文字和图例。</p>
+        </article>
+        <article class="step">
+          <h3>编辑导出</h3>
+          <p>用户选择方案，对话修改或手动编辑，最终导出 PDF、PNG、SVG、DXF 和 JSON。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="product">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Product Shape</p>
+          <h2>网页端画布 + AI 侧边栏，适合方案会现场使用。</h2>
+        </div>
+        <p class="section-intro">早期推荐做 Web App。左边是锁定底图和可编辑图层，右边是项目条件、AI 对话、方案卡片和评分。用户不必会 Revit，也能快速参与方案决策。</p>
+      </div>
+
+      <div class="app-shell" aria-label="产品界面示意">
+        <div class="canvas-demo">
+          <div class="floating-note">AI 建议：沿街入口 60% 人流适合放置高互动 social 区，中部保留线性主通道，右侧入口用于展示和引导。</div>
+          <div class="floor-outline"></div>
+          <div class="counter"></div>
+          <div class="zone social">Social 区</div>
+          <div class="zone office">办公 / 卡座</div>
+          <div class="zone soft">舒适软座</div>
+          <div class="pillar one"></div>
+          <div class="pillar two"></div>
+          <div class="flow-arrow"></div>
+        </div>
+        <aside class="side-panel">
+          <h3 class="panel-title">AI 方案助手</h3>
+          <div class="prompt-box">生成 6 个咖啡社交空间方案，沿街入口权重 60%，商场入口权重 40%，保留后场，尽量增加展示面和停留感。</div>
+          <div class="scheme-list">
+            <article class="scheme">
+              <strong>01 沿街社交强化</strong>
+              <p>把高互动区域前置，适合引流和活动推广。</p>
+            </article>
+            <article class="scheme">
+              <strong>02 中央长动线</strong>
+              <p>中部保持清晰路径，两侧分配办公、软座和展示。</p>
+            </article>
+            <article class="scheme">
+              <strong>03 商场入口展示</strong>
+              <p>右侧入口强化产品展示，左侧承担社交和停留。</p>
+            </article>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section white">
+      <div class="metrics" aria-label="MVP 目标指标">
+        <article class="metric">
+          <p class="metric-number">30s</p>
+          <p>从确认项目条件到生成首批方案卡片。</p>
+        </article>
+        <article class="metric">
+          <p class="metric-number">3-8</p>
+          <p>一次输出多个可比较、可继续编辑的方案。</p>
+        </article>
+        <article class="metric">
+          <p class="metric-number">15min</p>
+          <p>完成第一版功能落位汇报图导出。</p>
+        </article>
+        <article class="metric">
+          <p class="metric-number">JSON</p>
+          <p>每个最终方案沉淀为可复用案例资产。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section dark" id="users">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Audience</p>
+          <h2>先服务商业空间的高频早期方案场景。</h2>
+        </div>
+        <p class="section-intro">不要从泛家装或最终施工图切入。更好的早期市场是连锁品牌、商业设计团队、招商租赁和办公 test-fit，它们都需要更快看到多个可讨论方案。</p>
+      </div>
+
+      <div class="audiences">
+        <article class="audience">
+          <h3>设计团队</h3>
+          <p>把历史 Revit 和成品图纸转成案例库，快速生成多版功能分区、动线和汇报图，减少重复劳动。</p>
+        </article>
+        <article class="audience">
+          <h3>品牌拓展</h3>
+          <p>拿到铺位图后快速判断空间潜力，比较座位、展示、后场和动线策略，提升选址决策效率。</p>
+        </article>
+        <article class="audience">
+          <h3>招商租赁</h3>
+          <p>为潜在租户快速展示空间可用性，把空铺从“面积数字”变成可想象的未来经营场景。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section white" id="roadmap">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Roadmap</p>
+          <h2>先验证方案生成闭环，再做深 Revit 自动转换。</h2>
+        </div>
+        <p class="section-intro">MVP 的关键不是一次性解决所有格式，而是证明用户愿意上传图纸、生成方案、继续编辑并导出。RVT 云转换和专用模型放在第二阶段之后更稳。</p>
+      </div>
+
+      <div class="roadmap">
+        <article class="roadmap-item">
+          <div class="roadmap-phase">POC 4 周</div>
+          <div>
+            <h3>上传底图 + 手动确认 + AI 多方案</h3>
+            <p>支持 PNG/PDF，用户绘制边界和入口，AI 生成 3-6 个功能落位方案，导出 PNG 和 JSON。</p>
+          </div>
+        </article>
+        <article class="roadmap-item">
+          <div class="roadmap-phase">MVP 8-12 周</div>
+          <div>
+            <h3>案例库 + 方案卡片 + 对话修改</h3>
+            <p>建立历史案例结构化入库流程，支持相似案例检索、方案评分、局部重生成和编辑器精修。</p>
+          </div>
+        </article>
+        <article class="roadmap-item">
+          <div class="roadmap-phase">V1</div>
+          <div>
+            <h3>RVT 转 JSON 与团队工作流</h3>
+            <p>开发 Revit Add-in 或接入 Autodesk APS，把 RVT 批量转换成空间语义 JSON，支持团队案例库和标准化输出。</p>
+          </div>
+        </article>
+        <article class="roadmap-item">
+          <div class="roadmap-phase">Growth</div>
+          <div>
+            <h3>企业模型与专用布局引擎</h3>
+            <p>用用户选择、修改 diff 和最终方案训练排序模型、偏好模型和专用布局生成模型。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta">
+        <div>
+          <h2>最小可行版本：上传铺位图，生成 6 套可编辑方案。</h2>
+          <p>第一版不追求施工图深度，而是服务方案会议、客户沟通和内部脑暴。只要用户愿意选择一个方案继续编辑，这个产品闭环就成立了。</p>
+        </div>
+        <a class="button primary" href="commercial-space-ai-brainstorming-plan.md">打开开发方案</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    商业空间 AI 头脑风暴工具 | 静态展示页 | 基于本次产品讨论整理
+  </footer>
+</body>
+</html>
