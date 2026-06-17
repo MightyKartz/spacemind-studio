@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://commercial-space-ai.local/schemas/case.schema.json",
+  "title": "Commercial Space AI Case",
+  "type": "object",
+  "required": ["schemaVersion", "caseId", "title", "businessType", "tags", "siteFeatures", "layoutPattern", "finalScheme", "quality"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "businessType": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string" },
+    "sourceProjectId": { "type": "string" },
+    "sourceSchemeId": { "type": "string" },
+    "thumbnailFileId": { "type": "string" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "siteFeatures": {
+      "type": "object",
+      "required": ["areaRange", "shapeType", "entrancePattern"],
+      "additionalProperties": false,
+      "properties": {
+        "areaMin": { "type": "number", "minimum": 0 },
+        "areaMax": { "type": "number", "minimum": 0 },
+        "areaRange": { "type": "string" },
+        "shapeType": { "type": "string" },
+        "entrancePattern": { "type": "string" },
+        "trafficPattern": { "type": "string" },
+        "aspectRatio": { "type": "number", "minimum": 0 },
+        "columnPattern": { "type": "string" },
+        "backOfHouseRatio": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "layoutPattern": {
+      "type": "object",
+      "required": ["mainAisle", "primaryZonePlacement"],
+      "additionalProperties": false,
+      "properties": {
+        "mainAisle": { "type": "string" },
+        "primaryZonePlacement": { "type": "string" },
+        "backOfHouseStrategy": { "type": "string" },
+        "displayStrategy": { "type": "string" },
+        "adjacencyGraph": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "strategySummary": { "type": "string" },
+    "whyItWorked": { "type": "string" },
+    "knownTradeoffs": { "type": "array", "items": { "type": "string" } },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "embeddingText": { "type": "string" },
+        "embeddingModel": { "type": "string" },
+        "embeddingInputHash": { "type": "string" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["humanReviewed", "usableForGeneration"],
+      "additionalProperties": false,
+      "properties": {
+        "humanReviewed": { "type": "boolean" },
+        "usableForGeneration": { "type": "boolean" },
+        "qualityScore": { "type": "number", "minimum": 0, "maximum": 10 },
+        "validationStatus": { "type": "string", "enum": ["pass", "warn", "fail"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "finalScheme": {
+      "type": "object",
+      "required": ["schemeId"],
+      "additionalProperties": true,
+      "properties": {
+        "schemeId": { "type": "string" }
+      }
+    }
+  }
+}

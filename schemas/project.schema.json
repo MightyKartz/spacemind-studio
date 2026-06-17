@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://commercial-space-ai.local/schemas/project.schema.json",
+  "title": "Commercial Space AI Project",
+  "type": "object",
+  "required": ["schemaVersion", "projectId", "unit", "source", "coordinateSystem", "site", "constraints", "brief"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "projectId": { "type": "string", "minLength": 1 },
+    "name": { "type": "string" },
+    "createdAt": { "type": "string" },
+    "updatedAt": { "type": "string" },
+    "unit": { "type": "string", "const": "mm" },
+    "source": {
+      "type": "object",
+      "required": ["type", "fileId"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["png", "pdf", "svg", "dxf", "revit_json", "manual"] },
+        "fileId": { "type": "string", "minLength": 1 },
+        "fileName": { "type": "string" },
+        "page": { "type": "integer", "minimum": 1 },
+        "scale": { "type": "number", "exclusiveMinimum": 0 },
+        "scaleCalibration": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "knownLength": { "type": "number", "exclusiveMinimum": 0 },
+            "pixelLength": { "type": "number", "exclusiveMinimum": 0 },
+            "confirmed": { "type": "boolean" }
+          }
+        },
+        "backgroundTransform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "scale": { "type": "number", "exclusiveMinimum": 0 },
+            "rotation": { "type": "number" }
+          }
+        }
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "required": ["origin", "yAxis", "rotation", "scale"],
+      "additionalProperties": false,
+      "properties": {
+        "origin": { "$ref": "#/$defs/point" },
+        "yAxis": { "type": "string", "enum": ["down", "up"] },
+        "rotation": { "type": "number" },
+        "scale": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "site": {
+      "type": "object",
+      "required": ["boundary", "entrances", "fixedElements"],
+      "additionalProperties": false,
+      "properties": {
+        "area": { "type": "number", "minimum": 0 },
+        "shapeType": { "type": "string" },
+        "boundary": { "$ref": "#/$defs/polygon" },
+        "entrances": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/entrance" }
+        },
+        "fixedElements": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fixedElement" }
+        },
+        "grossArea": { "type": "number", "minimum": 0 },
+        "netDesignArea": { "type": "number", "minimum": 0 },
+        "candidateBackOfHouse": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/polygon" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["minAisleWidth", "doorClearanceDepth", "keepDoorClearance", "avoidColumns", "respectBoundary"],
+      "additionalProperties": false,
+      "properties": {
+        "minAisleWidth": { "type": "number", "minimum": 0 },
+        "secondaryAisleWidth": { "type": "number", "minimum": 0 },
+        "doorClearanceDepth": { "type": "number", "minimum": 0 },
+        "keepDoorClearance": { "type": "boolean" },
+        "avoidColumns": { "type": "boolean" },
+        "respectBoundary": { "type": "boolean" }
+      }
+    },
+    "brief": {
+      "type": "object",
+      "required": ["businessType", "goals"],
+      "additionalProperties": false,
+      "properties": {
+        "businessType": { "type": "string", "minLength": 1 },
+        "goals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "requiredZones": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "goalWeights": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "style": { "type": "string" },
+        "budgetLevel": { "type": "string", "enum": ["low", "medium", "high"] },
+        "minSeats": { "type": "integer", "minimum": 0 },
+        "generateCount": { "type": "integer", "minimum": 3, "maximum": 8 },
+        "referenceCaseIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "polygon": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/point" },
+      "minItems": 3
+    },
+    "entrance": {
+      "type": "object",
+      "required": ["id", "position", "trafficWeight"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "position": { "$ref": "#/$defs/point" },
+        "side": { "type": "string" },
+        "width": { "type": "number", "minimum": 0 },
+        "trafficWeight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "direction": { "type": "number" }
+        ,
+        "confirmed": { "type": "boolean" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "$ref": "#/$defs/sourceKind" }
+      }
+    },
+    "fixedElement": {
+      "type": "object",
+      "required": ["id", "type", "geometry"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["column", "wall", "door", "window", "back_of_house", "equipment", "no_build_zone"] },
+        "label": { "type": "string" },
+        "geometry": {
+          "type": "object",
+          "required": ["kind", "coordinates"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "type": "string", "enum": ["point", "line", "polygon"] },
+            "coordinates": {}
+          }
+        },
+        "locked": { "type": "boolean", "default": true },
+        "confirmed": { "type": "boolean" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "$ref": "#/$defs/sourceKind" }
+      }
+    },
+    "sourceKind": {
+      "type": "string",
+      "enum": ["user", "revit", "dxf", "svg", "ai_strategy", "geometry_engine", "imported_case"]
+    }
+  }
+}

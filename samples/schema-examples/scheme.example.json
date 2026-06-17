@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "0.1.0",
+  "schemeId": "scheme_demo_001",
+  "projectId": "proj_demo_001",
+  "projectRevision": "rev_001",
+  "name": "沿街社交强化方案",
+  "status": "valid",
+  "origin": {
+    "source": "geometry_engine",
+    "llmRunId": "llm_run_001",
+    "geometryRunId": "geo_run_001",
+    "geometryEngineVersion": "0.1.0",
+    "referenceCaseIds": ["case_demo_001"]
+  },
+  "strategy": {
+    "summary": "把高互动社交区放在沿街入口附近，中部保留线性主通道。",
+    "conceptTags": ["social_front", "linear_aisle"],
+    "rationale": "沿街入口人流更高，前置社交区可以提升吸引力。",
+    "tradeoffs": ["办公区面积减少"],
+    "assumptions": ["后场保持现状"],
+    "placementHints": ["social near entry_street"]
+  },
+  "caseRefs": ["case_demo_001"],
+  "zones": [
+    {
+      "id": "zone_social",
+      "type": "social",
+      "label": "阳光 social 区",
+      "polygon": [[1000, 5400], [6500, 5400], [6500, 8400], [1000, 8400]],
+      "color": "#bff4ee",
+      "area": 16500000,
+      "capacity": 12,
+      "rationale": "靠近沿街入口，强化停留和可见性。",
+      "locked": false,
+      "source": "geometry_engine"
+    }
+  ],
+  "furniture": [
+    {
+      "id": "furn_table_001",
+      "type": "round_table",
+      "label": "圆桌",
+      "position": [3000, 6800],
+      "size": { "width": 800, "depth": 800 },
+      "rotation": 0,
+      "zoneId": "zone_social",
+      "capacity": 4,
+      "source": "geometry_engine"
+    }
+  ],
+  "arrows": [
+    {
+      "id": "flow_main",
+      "type": "circulation",
+      "points": [[1000, 4500], [21000, 4500]],
+      "label": "主通道"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note_social",
+      "text": "沿街入口附近布置社交区，提升吸引与停留。",
+      "position": [1200, 8700],
+      "targetId": "zone_social",
+      "style": "red-note"
+    }
+  ],
+  "scores": {
+    "circulation": 8,
+    "capacity": 7,
+    "display": 8,
+    "cost": 6,
+    "feasibility": 8
+  },
+  "validation": {
+    "overallStatus": "pass",
+    "blockers": [],
+    "warnings": []
+  }
+}
+

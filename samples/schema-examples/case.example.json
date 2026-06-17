@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "0.1.0",
+  "caseId": "case_demo_001",
+  "title": "长条双入口咖啡社交空间",
+  "businessType": "coffee",
+  "createdAt": "2026-06-17T12:00:00+08:00",
+  "sourceProjectId": "proj_demo_001",
+  "sourceSchemeId": "scheme_demo_001",
+  "thumbnailFileId": "thumb_demo_001",
+  "tags": ["business:coffee", "shape:long_rectangle", "entrance:dual_opposite", "traffic:street_high"],
+  "siteFeatures": {
+    "areaMin": 150,
+    "areaMax": 250,
+    "areaRange": "150-250",
+    "shapeType": "long_rectangle",
+    "entrancePattern": "dual_opposite",
+    "trafficPattern": "street_high",
+    "aspectRatio": 2.4,
+    "columnPattern": "sparse",
+    "backOfHouseRatio": 0.18
+  },
+  "layoutPattern": {
+    "mainAisle": "linear_center",
+    "primaryZonePlacement": "street_front",
+    "backOfHouseStrategy": "compressed_side",
+    "displayStrategy": "entry_frontage",
+    "adjacencyGraph": {
+      "social": ["bar", "soft_seating"],
+      "bar": ["back_of_house"]
+    }
+  },
+  "strategySummary": "沿街入口强化社交与展示，中部线性通道连接双入口。",
+  "whyItWorked": "主客流侧有明确停留点，同时不牺牲中部通行效率。",
+  "knownTradeoffs": ["办公区面积有限"],
+  "retrieval": {
+    "embeddingText": "coffee long_rectangle dual_opposite street_high social_front linear_center",
+    "embeddingModel": "text-embedding",
+    "embeddingInputHash": "hash_demo_001"
+  },
+  "quality": {
+    "humanReviewed": true,
+    "usableForGeneration": true,
+    "qualityScore": 8,
+    "validationStatus": "pass",
+    "notes": "示例案例。"
+  },
+  "finalScheme": {
+    "schemeId": "scheme_demo_001"
+  }
+}
+

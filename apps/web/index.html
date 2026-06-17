@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商业空间 AI 头脑风暴工具</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2317211d'/%3E%3Cpath d='M14 14h36v36H14z' fill='none' stroke='%238edfd0' stroke-width='5'/%3E%3Cpath d='M32 14v36M14 32h36' stroke='%238edfd0' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <strong>商业空间 AI 头脑风暴工具</strong>
+        <span id="apiStatus">连接中</span>
+      </div>
+    </div>
+    <nav class="top-actions" aria-label="项目操作">
+      <button type="button" id="focusUpload">导入图纸</button>
+      <button type="button" id="createProject">创建项目</button>
+      <button type="button" id="generateStrategiesTop">生成方案</button>
+      <button type="button">导出</button>
+    </nav>
+  </header>
+
+  <main class="workspace">
+    <aside class="project-panel">
+      <section class="panel-section upload-section">
+        <p class="section-label">创建项目</p>
+        <label>
+          项目名称
+          <input id="projectTitle" type="text" value="长条双入口咖啡空间">
+        </label>
+        <label>
+          上传图纸
+          <input id="planFile" type="file" accept=".png,.pdf,.svg,.dxf,.json,image/png,application/pdf,image/svg+xml">
+        </label>
+        <div class="upload-status" id="uploadStatus">等待上传 PNG / PDF / SVG / DXF / Revit JSON</div>
+      </section>
+
+      <section class="panel-section">
+        <p class="section-label">项目条件</p>
+        <label>
+          项目类型
+          <select id="businessType">
+            <option>coffee</option>
+            <option>retail</option>
+            <option>office</option>
+            <option>exhibition</option>
+          </select>
+        </label>
+        <label>
+          生成数量
+          <input id="generateCount" type="number" min="3" max="8" value="6">
+        </label>
+      </section>
+
+      <section class="panel-section">
+        <p class="section-label">最近项目</p>
+        <div class="project-list" id="projectList">
+          <span>暂无项目</span>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <p class="section-label">图纸确认</p>
+        <div class="marking-tools" aria-label="手动标注工具">
+          <button type="button" class="active" data-mark-tool="pan">浏览</button>
+          <button type="button" data-mark-tool="boundary">边界</button>
+          <button type="button" data-mark-tool="entrance">入口</button>
+          <button type="button" data-mark-tool="column">柱子</button>
+          <button type="button" data-mark-tool="back_of_house">后场</button>
+        </div>
+        <label>
+          新入口人流权重
+          <input id="trafficWeightInput" type="number" min="0" max="1" step="0.05" value="0.5">
+        </label>
+        <button type="button" class="save-annotations" id="saveAnnotations">保存标注到 Project JSON</button>
+        <div class="annotation-summary" id="annotationSummary">
+          选择工具后在画布上点击或拖拽。
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <p class="section-label">约束</p>
+        <div class="constraint-list">
+          <span>主通道 >= 1200mm</span>
+          <span>保留门洞净空</span>
+          <span>避让结构柱</span>
+          <span>后场锁定</span>
+        </div>
+      </section>
+    </aside>
+
+    <section class="canvas-shell" aria-label="图纸画布">
+      <div class="canvas-toolbar">
+        <div>
+          <strong id="projectName">长条双入口咖啡空间</strong>
+          <span id="canvasStatus">底图层已锁定 / schema 0.1.0 / mm</span>
+        </div>
+        <div class="canvas-control-strip" aria-label="画布底图控制">
+          <span class="lock-chip" id="lockState">底图锁定</span>
+          <button type="button" id="zoomOut">-</button>
+          <strong id="zoomValue">100%</strong>
+          <button type="button" id="zoomIn">+</button>
+          <button type="button" id="resetCanvas">复位</button>
+          <label class="opacity-control">
+            透明度
+            <input id="planOpacity" type="range" min="35" max="100" value="74">
+          </label>
+        </div>
+      </div>
+      <div class="plan-canvas" id="planCanvas" tabindex="0" aria-label="锁定底图画布">
+        <div class="canvas-stage" id="canvasStage">
+          <div class="locked-plan-layer" id="lockedPlanLayer" aria-label="已锁定图纸底图">
+            <img class="plan-image" id="planImage" src="/assets/source-plan.png" alt="已锁定商业空间平面底图">
+            <iframe class="plan-frame" id="planFrame" title="已锁定 PDF 图纸底图"></iframe>
+            <div class="plan-fallback" id="planFallback">
+              <strong>底图待预览</strong>
+              <span id="planFallbackText">当前文件类型会保留为项目 source，后续在矢量解析阶段展示。</span>
+            </div>
+            <span class="plan-lock-badge">底图层 / locked</span>
+          </div>
+          <div class="overlay-layer" aria-label="方案预览覆盖层">
+            <div class="zone zone-social">Social</div>
+            <div class="zone zone-work">办公 / 卡座</div>
+            <div class="zone zone-lounge">软座</div>
+            <div class="fixed-column column-a"></div>
+            <div class="fixed-column column-b"></div>
+            <div class="main-flow"></div>
+          </div>
+          <div class="annotation-layer" id="annotationLayer" aria-label="手动确认标注层"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="ai-panel">
+      <section class="prompt-card">
+        <p class="section-label">AI Brief</p>
+        <textarea id="briefInput">生成 6 个适合咖啡社交空间的方案，沿街入口权重 60%，商场入口权重 40%，保留后场，增加展示面和停留感。</textarea>
+        <div class="brief-actions">
+          <button type="button" id="generateStrategies">生成策略</button>
+          <button type="button" id="showStrategyPrompt">查看 Prompt</button>
+        </div>
+      </section>
+
+      <section class="prompt-card case-library-card">
+        <p class="section-label">案例库</p>
+        <div class="case-actions">
+          <button type="button" id="importSeedCases">导入种子案例</button>
+          <button type="button" id="retrieveSimilarCases">相似案例</button>
+          <button type="button" id="refreshCases">刷新案例</button>
+        </div>
+        <div class="case-status" id="caseStatus">等待导入可用于 AI 参考的案例。</div>
+        <p class="mini-label">检索结果</p>
+        <div class="retrieval-list" id="retrievalList">
+          <span>相似案例会显示在这里。</span>
+        </div>
+        <p class="mini-label">案例库</p>
+        <div class="case-list" id="caseList">
+          <span>暂无案例</span>
+        </div>
+      </section>
+
+      <section class="prompt-card strategy-card">
+        <p class="section-label">策略草案</p>
+        <div class="strategy-status" id="strategyStatus">等待生成策略。</div>
+        <div class="strategy-actions">
+          <button type="button" id="convertSelectedStrategy">转为 Scheme JSON</button>
+        </div>
+        <div class="strategy-list" id="strategyList">
+          <span>策略草案会显示在这里。</span>
+        </div>
+      </section>
+
+      <section class="prompt-card">
+        <p class="section-label">创建结果</p>
+        <pre class="result-box" id="resultBox">项目创建后会显示 JSON 摘要。</pre>
+      </section>
+
+      <section class="prompt-card scheme-editor-card">
+        <p class="section-label">方案 JSON</p>
+        <div class="scheme-actions">
+          <button type="button" id="createScheme">新建草案</button>
+          <button type="button" id="undoSchemeEdit">撤销</button>
+          <button type="button" id="redoSchemeEdit">重做</button>
+          <button type="button" id="saveScheme">保存 JSON</button>
+          <button type="button" id="saveSchemeVersion">保存版本</button>
+        </div>
+        <div class="scheme-export-actions" aria-label="方案导出">
+          <button type="button" data-export-format="json">JSON</button>
+          <button type="button" data-export-format="svg">SVG</button>
+          <button type="button" data-export-format="dxf">DXF</button>
+          <button type="button" data-export-format="png">PNG</button>
+          <button type="button" data-export-format="pdf">PDF</button>
+        </div>
+        <div class="scheme-status" id="schemeStatus">选择项目后可创建可编辑方案 JSON。</div>
+        <textarea id="schemeJsonEditor" spellcheck="false">{}</textarea>
+      </section>
+
+      <section class="scheme-stack" id="schemeStack">
+        <article class="scheme-card selected">
+          <div>
+            <strong>01 沿街社交强化</strong>
+            <span>动线 8 / 展示 8 / 可落地 8</span>
+          </div>
+          <p>高互动区域靠近沿街入口，中部保持线性主通道。</p>
+        </article>
+        <article class="scheme-card">
+          <div>
+            <strong>02 中央长动线</strong>
+            <span>动线 9 / 容量 7 / 成本 6</span>
+          </div>
+          <p>用中央通道组织双入口，两侧分配卡座和软座。</p>
+        </article>
+        <article class="scheme-card">
+          <div>
+            <strong>03 入口展示面</strong>
+            <span>展示 9 / 品牌 8 / 成本 7</span>
+          </div>
+          <p>商场入口强化展示，沿街入口承担停留和活动。</p>
+        </article>
+      </section>
+    </aside>
+  </main>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
