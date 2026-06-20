@@ -1,27 +1,34 @@
 # Goal Prompt
 
-Copy this prompt into a Codex goal. It is intentionally under 4000 characters.
+Copy this prompt into a Codex goal by running `/goal` and pasting the block below.
+It is intentionally compact so it can be reused as the project bootstrap prompt.
 
 ```text
-Goal: Build the Commercial Space AI Brainstorming Tool through a multi-agent implementation loop and open a draft PR when complete.
+Goal: Continue Commercial Space AI as a multi-agent, PR-driven development loop until the first unchecked task in the first Active phase is implemented, verified, documented, committed, pushed, and opened as a draft PR when possible.
 
-Read AGENTS.md first, then TASK_BOARD.md, then MULTI_AGENT_IMPLEMENTATION_PLAN.md, then the product docs. Use the Product Design plugin/method for product scope, user flows, acceptance criteria, and MVP tradeoffs. Use codex-multi-agent-development-loop for board-driven execution. Use frontend-design for UI/canvas work, Browser/Playwright for local UI verification, Revit API docs for Revit export work, and GitHub/yeet skill or GitHub MCP to create a draft PR when this workspace is a GitHub repo.
+Read in this order:
+1. AGENTS.md
+2. TASK_BOARD.md
+3. MULTI_AGENT_IMPLEMENTATION_PLAN.md
+4. docs/multi-agent-goal-runbook.md
+5. commercial-space-ai-project-generation-plan.md
+6. commercial-space-ai-brainstorming-plan.md
+7. revit-json-addin-windows-development-plan.md
+8. .codex/agents/*.md only for roles needed by the selected task
 
-Execution rules:
+Use Product Design method for scope, user flow, acceptance criteria, and MVP tradeoffs. Use codex-multi-agent-development-loop for board execution. Use frontend-design and Browser/Playwright for Web UI work. Use Revit API docs and the Revit JSON Add-in plan for Windows plugin work. Use github:yeet, GitHub MCP, or gh CLI for branch/commit/push/draft PR when authenticated.
+
+Operating loop:
 1. Select the first unchecked task in the first Active phase of TASK_BOARD.md.
-2. Before coding, write a short stage card: goal, source truth, assigned agents, files, verification, risks.
-3. Use subagents only when useful and keep responsibilities disjoint:
-   - Product Design Agent: scope, journey, acceptance criteria.
-   - Frontend Canvas Agent: Web UI, 2D canvas, scheme cards, export UX.
-   - Backend AI Agent: API, database, RAG/case retrieval, LLM orchestration.
-   - Geometry Agent: placement, clipping, collision, door/column avoidance, SVG/DXF.
-   - Revit Export Agent: Windows C# Add-in and RVT to JSON.
-   - QA Release Agent: verification, board updates, PR body.
+2. Write a stage card before edits: goal, source truth, stale risk, agents, files, verification, confirmation gate.
+3. Delegate only when the user explicitly asked for multi-agent work or the board requires it. Keep agent file ownership disjoint.
 4. Implement the selected task with minimal unrelated churn.
-5. Verify with the smallest sufficient tests/checks. For frontend, open the local app and inspect the UI. For exports, verify generated files. For docs, check links and consistency.
-6. Update TASK_BOARD.md only after verification passes.
-7. If all changes are ready and this is a git repo, create a branch, commit, push, and open a draft PR. PR body must include goal, changed files, verification, risks, and follow-ups. If no git repo exists, report PR blocked and list files changed.
+5. Verify before claiming completion. Use schema checks, node --check, API smoke tests, Playwright/browser checks, export checks, or Windows/Revit checks as appropriate.
+6. Update TASK_BOARD.md only after verification passes. Add date, agents, files, validation, result, and remaining risks.
+7. Auto PR flow: if on main/master, create branch codex/<short-task-slug>; stage only intended files; commit with a terse scoped message; push to origin; open a draft PR. If a PR already exists for the branch, update it. If GitHub auth or permission is missing, report the blocker and keep local changes committed.
 
-Do not change model/provider/API key behavior, increase third-party costs, deploy production services, or run destructive database operations without explicit user confirmation.
+Confirmation gates:
+- Ask before model/provider/API-key behavior changes, paid third-party usage, production deployment, destructive database operations, force push/history rewrite, or expanding product scope beyond documented MVP direction.
+
+Done means verification passed, the task board reflects reality, and draft PR status is reported truthfully.
 ```
-

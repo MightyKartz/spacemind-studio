@@ -284,3 +284,30 @@ Completion record - draft PR summary:
 - Validation: `git rev-parse --is-inside-work-tree`, `git status --short`
 - Result: generated `PR_SUMMARY.md` with goal, changed files, verification, risks, and follow-ups.
 - Remaining risks: draft PR creation is blocked because `/Users/kartz/Development/Revit` is not a Git repository; no branch, commit, push, or GitHub PR could be created from this workspace.
+
+## Phase 6 - Beta Hardening And Real-World Validation
+
+Status: Active
+
+- [x] ~~Generate multi-agent goal runbook and automatic PR protocol~~
+- [ ] Build beta fixture validation pack with 10 real or anonymized project types
+- [ ] Validate Revit Add-in on Windows with Revit 2025 and document Revit 2026 path
+- [ ] Define real LLM/provider adapter decision gate and evaluation harness
+- [ ] Add retrieval, geometry, and export quality reports for beta runs
+- [ ] Run beta release verification and open/update draft PR
+
+Phase intent:
+
+- Move from demo-complete MVP to beta-ready workflow.
+- Keep local deterministic AI behavior as the default until the user explicitly approves provider/API-key changes.
+- Prove the Revit JSON path with real Windows/Revit fixtures before APS or installer investment.
+- Treat every completed task as PR-ready: verified, documented, committed, pushed, and opened as a draft PR when GitHub access permits.
+
+Completion record - multi-agent goal runbook and automatic PR protocol:
+
+- Date: 2026-06-20
+- Agents: Product Design Agent, QA Release Agent
+- Files: `agnet.md`, `GOAL_PROMPT.md`, `MULTI_AGENT_IMPLEMENTATION_PLAN.md`, `docs/multi-agent-goal-runbook.md`, `docs/superpowers/plans/2026-06-20-multi-agent-beta-hardening.md`, `TASK_BOARD.md`
+- Validation: `rg -n "GOAL_PROMPT|multi-agent-goal-runbook|Phase 6|draft PR|/goal|automatic PR|自动 PR|Auto PR" agnet.md GOAL_PROMPT.md MULTI_AGENT_IMPLEMENTATION_PLAN.md TASK_BOARD.md docs/multi-agent-goal-runbook.md docs/superpowers/plans/2026-06-20-multi-agent-beta-hardening.md`, `git diff --check`, GOAL prompt length check (`2307` characters inside the prompt block)
+- Result: added a reusable goal prompt, typo-compatible `agnet.md` launcher, multi-agent runbook, detailed implementation plan, Phase 6 beta hardening task board, and automatic draft PR protocol.
+- Remaining risks: automatic PR creation still depends on local GitHub CLI authentication, remote push permission, and GitHub availability; real Windows/Revit and paid provider tasks remain gated follow-ups.
