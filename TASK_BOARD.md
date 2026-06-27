@@ -290,7 +290,7 @@ Completion record - draft PR summary:
 Status: Active
 
 - [x] ~~Generate multi-agent goal runbook and automatic PR protocol~~
-- [ ] Build beta fixture validation pack with 10 real or anonymized project types
+- [x] ~~Build beta fixture validation pack with 10 real or anonymized project types~~
 - [ ] Validate Revit Add-in on Windows with Revit 2025 and document Revit 2026 path
 - [ ] Define real LLM/provider adapter decision gate and evaluation harness
 - [ ] Add retrieval, geometry, and export quality reports for beta runs
@@ -311,3 +311,12 @@ Completion record - multi-agent goal runbook and automatic PR protocol:
 - Validation: `rg -n "GOAL_PROMPT|multi-agent-goal-runbook|Phase 6|draft PR|/goal|automatic PR|自动 PR|Auto PR" agnet.md GOAL_PROMPT.md MULTI_AGENT_IMPLEMENTATION_PLAN.md TASK_BOARD.md docs/multi-agent-goal-runbook.md docs/superpowers/plans/2026-06-20-multi-agent-beta-hardening.md`, `git diff --check`, GOAL prompt length check (`2307` characters inside the prompt block)
 - Result: added a reusable goal prompt, typo-compatible `agnet.md` launcher, multi-agent runbook, detailed implementation plan, Phase 6 beta hardening task board, and automatic draft PR protocol.
 - Remaining risks: automatic PR creation still depends on local GitHub CLI authentication, remote push permission, and GitHub availability; real Windows/Revit and paid provider tasks remain gated follow-ups.
+
+Completion record - beta fixture validation pack:
+
+- Date: 2026-06-20
+- Agents: Product Design Agent, QA Release Agent, Revit Export Agent
+- Files: `docs/beta-validation-plan.md`, `samples/beta-fixtures/README.md`, `TASK_BOARD.md`
+- Validation: `rg -n "Fixture Matrix|beta_01_simple_coffee|beta_08_revit_export_rich|Privacy Checklist|Go / No-Go|15 minutes|schema-valid|anonymized|private evidence" docs/beta-validation-plan.md samples/beta-fixtures/README.md`, `python3 scripts/validate_schemas.py`, `git diff --check`
+- Result: added a 10-class beta fixture matrix, fixture intake directory rules, privacy/anonymization checklist, beta run protocol, acceptance metrics, Revit import fixture requirements, and go/no-go gates for moving beyond demo-quality validation.
+- Remaining risks: no real customer beta source files are committed yet; fixture execution evidence, Windows/Revit runtime validation, CAD export viewer checks, and paid provider evaluation remain follow-up Phase 6 tasks.
