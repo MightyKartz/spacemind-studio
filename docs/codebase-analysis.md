@@ -1,6 +1,6 @@
 # 代码库现状分析
 
-日期：2026-06-27  
+日期：2026-06-27
 范围：当前 `main` 分支代码、文档、Schema、Revit Add-in scaffold 和 Phase 6 任务看板。
 
 ## 结论
@@ -298,4 +298,3 @@ python3 scripts/validate_schemas.py
 ```
 
 截至本文件创建时，上述验证通过。
-
